@@ -205,9 +205,7 @@ class _LinearPercentIndicatorState extends State<LinearPercentIndicator>
   Widget build(BuildContext context) {
     super.build(context);
     var items = List<Widget>();
-    if (widget.leading != null) {
-      items.add(widget.leading);
-    }
+
     final hasSetWidth = widget.width != null;
     final percentPositionedHorizontal = _containerWidth * _percent - _indicatorWidth / 3;
     var containerWidget = Container(
@@ -230,7 +228,25 @@ class _LinearPercentIndicatorState extends State<LinearPercentIndicator>
               maskFilter: widget.maskFilter,
               clipLinearGradient: widget.clipLinearGradient,
             ),
-            child: (widget.center != null) ? Center(child: widget.center) : Container(),
+            child: (widget.leading != null) ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: (widget.percent * 10).toInt(),
+                  child: Center(
+                    child: widget.leading,
+                  )
+                ),
+                Expanded(
+                  flex: 10 - (widget.percent * 10).toInt(),
+                  child: Center(
+                    child: widget.trailing,
+                  ),
+                ),
+              ],
+            ) : Container(),
+
           ),
           if (widget.widgetIndicator != null && _indicatorWidth == 0)
             Opacity(
@@ -255,9 +271,6 @@ class _LinearPercentIndicatorState extends State<LinearPercentIndicator>
       items.add(Expanded(
         child: containerWidget,
       ));
-    }
-    if (widget.trailing != null) {
-      items.add(widget.trailing);
     }
 
     return Material(
@@ -309,14 +322,17 @@ class LinearPainter extends CustomPainter {
     _paintLine.style = PaintingStyle.stroke;
     _paintLine.strokeWidth = lineWidth;
 
-    if (linearStrokeCap == LinearStrokeCap.round) {
-      _paintLine.strokeCap = StrokeCap.round;
-    } else if (linearStrokeCap == LinearStrokeCap.butt) {
-      _paintLine.strokeCap = StrokeCap.butt;
-    } else {
-      _paintLine.strokeCap = StrokeCap.round;
-      _paintBackground.strokeCap = StrokeCap.round;
-    }
+    _paintLine.strokeCap = StrokeCap.butt;
+    _paintBackground.strokeCap = StrokeCap.round;
+    // if (linearStrokeCap == LinearStrokeCap.round) {
+    //   _paintLine.strokeCap = StrokeCap.round;
+    // } else if (linearStrokeCap == LinearStrokeCap.butt) {
+    //   _paintLine.strokeCap = StrokeCap.round;
+    //   _paintBackground.strokeCap = StrokeCap.round;
+    // } else {
+    //   _paintLine.strokeCap = StrokeCap.square;
+    //   _paintBackground.strokeCap = StrokeCap.round;
+    // }
   }
 
   @override
